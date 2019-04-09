@@ -18,7 +18,7 @@ function put_glyph(f, canvas, strokes, medians)
                put!(canvas, stroke(line))
                lastPoint = cmd.point
             elseif cmd.type == 'Q'
-               curve = Curve(startPoint=f(lastPoint), control1=f(cmd.control), control2=f(cmd.control), endPoint=f(cmd.endPoint), thickness=thickness, color=strokeColor)
+               curve = Curve(startPoint=f(lastPoint), control1=f(cmd.control), control2=f(cmd.endPoint), endPoint=f(cmd.endPoint), thickness=thickness, color=strokeColor)
                put!(canvas, stroke(curve))
                lastPoint = cmd.endPoint
             elseif cmd.type == 'Z'
@@ -42,4 +42,6 @@ put_glyph(canvas, strokes, medians) do point
     (x, height-y) ./ 5 .+ (0, 110)
 end
 window1 = Windows.Window(items=[canvas], title="opentype", frame=(x=10, y=10, width=width-20, height=height-20))
-app = Application(windows=[window1], title="App", frame=(width=width, height=height))
+closenotify = Condition()
+app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
+Base.JLOptions().isinteractive==0 && wait(closenotify)
