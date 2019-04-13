@@ -1,12 +1,5 @@
 module OpenType
 
-export Vec
-
-using FreeType
-using StaticArrays # SVector
-
-const Vec = SVector{2}
-
 function feed!(l, commands)
     if isempty(l)
         commands
