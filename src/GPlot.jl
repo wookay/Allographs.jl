@@ -1,9 +1,11 @@
+module GPlot # Allographs
+
 using GraphPlot: spring_layout, graphline, graphcurve
-using Compose: Compose, inch, circle, line, hcenter
+using Compose: Compose, circle, line, hcenter
 using LightGraphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, edges, src, dst
 using LightGraphs: AbstractGraph
 using LightGraphs.SimpleGraphs: nv, ne, is_directed
-using Colors # RGBA @colorant_str
+using Colors: @colorant_str
 
 # take from https://github.com/JuliaGraphs/GraphPlot.jl/blob/master/src/plot.jl
 function gplot(g::AbstractGraph{T},
@@ -133,43 +135,7 @@ function gplot(g::AbstractGraph{T},
             lines = line(lines_cord)
         end
     end
-    (nodes, texts, edgetexts, lines)
+    (nodes, texts, edgetexts, lines, arrows)
 end
 
-using Tutte.Graphs # Graph ⇿ IDMap Node @nodes
-@nodes A B C D E
-graph = Graph(union(A ⇿ C ⇿ D ⇿ E, C ⇿ E ⇿ B))
-idmap = IDMap(graph)
-g = SimpleGraph(graph)
-(nodes, texts, edgetexts, lines) = gplot(g, spring_layout(g)...;)
-
-using Poptart.Controls # Canvas
-using Poptart.Drawings # Line Curve stroke
-
-canvas = Canvas()
-scale(x) = 200 + 5inch.value * x
-
-textColor = RGBA(0.8, 0.7, 0.8, 0.9)
-for (i, prim) in enumerate(nodes.primitives)
-    center = (p -> p.value).(prim.center)
-    radius = prim.radius.value
-    rect = scale.((center[1] - radius, center[2] - radius, center[1] + radius, center[2] + radius))
-    node = idmap[i]
-    textbox = TextBox(text=String(node.id), rect=rect, color=textColor)
-    put!(canvas, textbox)
-end
-
-thickness = 6
-strokeColor = RGBA(0.1, 0.7, 0.8, 0.9)
-for prim in lines.primitives
-    points = (p -> scale.((p[1].value, p[2].value))).(prim.points)
-    line = Line(points=points, thickness=thickness, color=strokeColor)
-    put!(canvas, stroke(line))
-end
-
-using Poptart.Desktop # Application
-width, height = 500, 500
-window1 = Windows.Window(items=[canvas], title="Tutte", frame=(x=10, y=10, width=width-20, height=height-20))
-closenotify = Condition()
-app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
-Base.JLOptions().isinteractive==0 && wait(closenotify)
+end # module Allographs.GPlot
