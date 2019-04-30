@@ -1,7 +1,7 @@
 module GPlot # Allographs
 
 using GraphPlot: spring_layout, graphline, graphcurve
-using Compose: Compose, hcenter, vcenter
+using Compose: Compose
 using LightGraphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, edges, src, dst
 using LightGraphs: AbstractGraph
 using LightGraphs.SimpleGraphs: nv, ne, is_directed
@@ -72,10 +72,6 @@ function gplot(g::AbstractGraph{T},
     map!(z -> scaler(z, min_x, max_x), locs_x, locs_x)
     map!(z -> scaler(z, min_y, max_y), locs_y, locs_y)
 
-    # Determine sizes
-    #NODESIZE    = 0.25/sqrt(N)
-    #LINEWIDTH   = 3.0/sqrt(N)
-
     max_nodesize = NODESIZE / maximum(nodesize)
     nodesize *= max_nodesize
     max_edgelinewidth = EDGELINEWIDTH / maximum(edgelinewidth)
@@ -102,32 +98,6 @@ function gplot(g::AbstractGraph{T},
         push!(nodes, (center=(locs_x[i], locs_y[i]), radius=nodecircle[i].value))
     end
 
-    # Create node labels if provided
-    texts = nothing
-    if nodelabel != nothing
-        text_locs_x = deepcopy(locs_x)
-        text_locs_y = deepcopy(locs_y)
-        texts = text(text_locs_x .+ nodesize .* (nodelabeldist * cos(nodelabelangleoffset)),
-                     text_locs_y .- nodesize .* (nodelabeldist * sin(nodelabelangleoffset)),
-                     map(string, nodelabel), [hcenter], [vcenter])
-    end
-    # Create edge labels if provided
-    edgetexts = nothing
-    if !isempty(edgelabel)
-        edge_locs_x = zeros(R, NE)
-        edge_locs_y = zeros(R, NE)
-        for (e_idx, e) in enumerate(edges(g))
-            i = src(e)
-            j = dst(e)
-            mid_x = (locs_x[i]+locs_x[j]) / 2.0
-            mid_y = (locs_y[i]+locs_y[j]) / 2.0
-            edge_locs_x[e_idx] = (is_directed(g) ? (mid_x+locs_x[j]) / 2.0 : mid_x) + edgelabeldistx * NODESIZE
-            edge_locs_y[e_idx] = (is_directed(g) ? (mid_y+locs_y[j]) / 2.0 : mid_y) + edgelabeldisty * NODESIZE
-
-        end
-        edgetexts = text(edge_locs_x, edge_locs_y, map(string, edgelabel), [hcenter], [vcenter])
-    end
-
     # Create lines and arrow heads
     lines, arrows = nothing, nothing
     if linetype == "curve"
@@ -149,7 +119,7 @@ function gplot(g::AbstractGraph{T},
             lines = lines_cord
         end
     end
-    (nodes, texts, edgetexts, lines, arrows)
+    (nodes=nodes, lines=lines, arrows=arrows)
 end
 
 end # module Allographs.GPlot

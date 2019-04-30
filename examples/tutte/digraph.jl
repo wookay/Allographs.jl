@@ -7,7 +7,7 @@ idmap = IDMap(graph)
 g = SimpleDiGraph(graph)
 
 using Allographs.GPlot
-(nodes, texts, edgetexts, lines, arrows) = GPlot.gplot(g)
+plot = GPlot.gplot(g)
 
 using Poptart.Controls # Canvas
 using Poptart.Drawings # Line Polyline Curve TextBox stroke translate scale
@@ -18,7 +18,7 @@ canvas = Canvas()
 transform(element) = translate(scale(element, 5inch.value), 200)
 
 textColor = RGBA(0.8, 0.7, 0.8, 0.9)
-for (i, n) in enumerate(nodes)
+for (i, n) in enumerate(plot.nodes)
     rect = ((n.center .- n.radius)..., (n.center .+ n.radius)...)
     node = idmap[i]
     textbox = TextBox(text=String(node.id), rect=rect, color=textColor) |> transform
@@ -27,11 +27,11 @@ end
 
 thickness = 6
 strokeColor = RGBA(0.1, 0.7, 0.8, 1)
-for points in lines
+for points in plot.lines
     line = Line(points=points, thickness=thickness, color=strokeColor) |> transform
     put!(canvas, stroke(line))
 end
-for points in arrows
+for points in plot.arrows
     arrow = Polyline(points=points, thickness=thickness, color=strokeColor) |> transform
     put!(canvas, stroke(arrow))
 end
