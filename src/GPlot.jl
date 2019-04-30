@@ -1,11 +1,26 @@
 module GPlot # Allographs
 
 using GraphPlot: spring_layout, graphline, graphcurve
-using Compose: Compose, circle, line, hcenter
+using Compose: Compose, hcenter, vcenter
 using LightGraphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, edges, src, dst
 using LightGraphs: AbstractGraph
 using LightGraphs.SimpleGraphs: nv, ne, is_directed
 using Colors: @colorant_str
+
+function curve_lines(lines_cord)::Vector{NamedTuple{(:startPoint, :control, :endPoint)}}
+    points = []
+    for cord in lines_cord
+        startPoint = (cord[2:3]...,)
+        control = (cord[5:6]...,)
+        endPoint =  (cord[7:8]...,)
+        push!(points, (startPoint=startPoint, control=control, endPoint=endPoint))
+    end
+    points
+end
+
+function gplot(g::AbstractGraph{T}; kwargs...) where {T <:Integer}
+    gplot(g, spring_layout(g)...; kwargs...)
+end
 
 # take from https://github.com/JuliaGraphs/GraphPlot.jl/blob/master/src/plot.jl
 function gplot(g::AbstractGraph{T},
@@ -77,16 +92,15 @@ function gplot(g::AbstractGraph{T},
 
     # Create nodes
     nodecircle = fill(0.4Compose.w, length(locs_x))
-    if isa(nodesize, Real)
-        for i = 1:length(locs_x)
+    nodes = []
+    for i = 1:length(locs_x)
+        if isa(nodesize, Real)
             nodecircle[i] *= nodesize
-        end
-    else
-        for i = 1:length(locs_x)
+        else
             nodecircle[i] *= nodesize[i]
         end
+        push!(nodes, (center=(locs_x[i], locs_y[i]), radius=nodecircle[i].value))
     end
-    nodes = circle(locs_x, locs_y, nodecircle)
 
     # Create node labels if provided
     texts = nothing
@@ -119,20 +133,20 @@ function gplot(g::AbstractGraph{T},
     if linetype == "curve"
         if arrowlengthfrac > 0.0
             lines_cord, arrows_cord = graphcurve(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset, outangle)
-            lines = path(lines_cord)
-            arrows = line(arrows_cord)
+            lines = curve_lines(lines_cord)
+            arrows = arrows_cord
         else
             lines_cord = graphcurve(g, locs_x, locs_y, nodesize, outangle)
-            lines = path(lines_cord)
+            lines = curve_lines(lines_cord)
         end
     else
         if arrowlengthfrac > 0.0
             lines_cord, arrows_cord = graphline(g, locs_x, locs_y, nodesize, arrowlengthfrac, arrowangleoffset)
-            lines = line(lines_cord)
-            arrows = line(arrows_cord)
+            lines = lines_cord
+            arrows = arrows_cord
         else
             lines_cord = graphline(g, locs_x, locs_y, nodesize)
-            lines = line(lines_cord)
+            lines = lines_cord
         end
     end
     (nodes, texts, edgetexts, lines, arrows)
