@@ -1,4 +1,4 @@
-using Allographs.OpenType
+using Allographs.FontEngines.OpenType
 using Poptart.Desktop # Application
 using Poptart.Controls # Canvas
 using Poptart.Drawings # Line Curve stroke

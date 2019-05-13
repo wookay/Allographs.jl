@@ -1,4 +1,4 @@
-module OpenType
+module OpenType # Allographs.FontEngines
 
 function feed!(l, commands)
     if isempty(l)
@@ -44,4 +44,4 @@ function stroke_to_commands(stroke::String)::Vector
     feed!(l, [])
 end
 
-end # module Allographs.OpenType
+end # module Allographs.FontEngines.OpenType

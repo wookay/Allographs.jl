@@ -4,6 +4,7 @@ authors = ["WooKyoung Noh <wookay.noh@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+FreeType = "b38be410-82b0-50bf-ab77-7b57e271db43"
 GraphPlot = "a2cc645c-3eea-5389-862e-a155d0052231"
 Compose = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
 LightGraphs = "093fc24a-ae57-5d10-9952-331d41423f4d"
