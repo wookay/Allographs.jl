@@ -27,15 +27,16 @@ function put_glyph(transform, canvas, commands)
     end
 end
 
-canvas = Canvas()
 width, height = 500, 500
+closenotify = Condition()
+canvas = Canvas()
+window1 = Windows.Window(items=[canvas], title="freetype2", frame=(x=10, y=10, width=width-20, height=height-20))
+app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
 
 font_path = normpath(@__DIR__, "IropkeBatangM.ttf")
-commands = FreeType2.char_to_commands(font_path, '헐', 72)
+commands = FreeType2.char_to_commands(font_path, '헐', 16)
 put_glyph(canvas, commands) do element
-    translate(scale(element, (1/7, -1/7)), (10, 150))
+    translate(scale(element, (1/7, -1/7)), (20, 180))
 end
-window1 = Windows.Window(items=[canvas], title="freetype2", frame=(x=10, y=10, width=width-20, height=height-20))
-closenotify = Condition()
-app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
+
 Base.JLOptions().isinteractive==0 && wait(closenotify)

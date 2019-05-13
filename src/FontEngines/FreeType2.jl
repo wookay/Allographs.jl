@@ -1,6 +1,6 @@
 module FreeType2 # Allographs.FontEngines
 
-using FreeType: FT_Init_FreeType, FT_New_Face, FT_Get_Char_Index, FT_Set_Char_Size, FT_Load_Glyph, FT_Outline_Funcs, FT_Outline_Decompose, FT_Done_FreeType, FT_Library, FT_Face, FT_Vector, FT_LOAD_NO_SCALE, FT_LOAD_NO_BITMAP
+using FreeType: FT_Init_FreeType, FT_New_Face, FT_Get_Char_Index, FT_Set_Char_Size, FT_Load_Glyph, FT_Outline_Funcs, FT_Outline_Decompose, FT_Done_FreeType, FT_Library, FT_Face, FT_Vector, FT_LOAD_NO_BITMAP
 
 struct Font
     path::String
@@ -46,13 +46,12 @@ function close_font(font::Font)
 end
 
 function char_to_glyph(font::Font, ch::Char, char_size::Int)
-    char_to_glyph(font, ch, (char_size, char_size))
-end
-
-function char_to_glyph(font::Font, ch::Char, char_size::Tuple{Int, Int})
     char_index = FT_Get_Char_Index(font.face, ch)
-    FT_Set_Char_Size(font.face, char_size..., 0, 0) # face char_width char_height horz_resolution vert_resolution
-    FT_Load_Glyph(font.face, char_index, FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP)
+    pt = 64char_size # FT_F26Dot6
+    dpi = 72         # GetDeviceCaps
+    FT_Set_Char_Size(font.face, pt, pt, dpi, dpi) # face char_width char_height horz_resolution vert_resolution
+    # FT_Set_Pixel_Sizes(font.face, char_size, char_size) # face pixel_width pixel_height
+    FT_Load_Glyph(font.face, char_index, FT_LOAD_NO_BITMAP)
     face = unsafe_load(font.face)
     unsafe_load(face.glyph)
 end
