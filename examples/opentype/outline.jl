@@ -1,5 +1,5 @@
 using Allographs.FontEngines.OpenType
-using Poptart.Desktop # Application
+using Poptart.Desktop # Window Application
 using Poptart.Controls # Canvas
 using Poptart.Drawings # Line Curve Polyline stroke translate scale
 using Colors # RGBA
@@ -40,7 +40,7 @@ medians = [[[458,627],[392,631],[336,588],[274,552],[258,550],[253,542],[220,530
 put_glyph(canvas, strokes, medians) do element
     translate(scale(element, (1/5, -1/5)), (0, 210))
 end
-window1 = Windows.Window(items=[canvas], title="opentype", frame=(x=10, y=10, width=width-20, height=height-20))
+window1 = Window(items=[canvas], title="opentype", frame=(x=10, y=10, width=width-20, height=height-20))
 closenotify = Condition()
 app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
 Base.JLOptions().isinteractive==0 && wait(closenotify)

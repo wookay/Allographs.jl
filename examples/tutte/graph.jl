@@ -32,9 +32,9 @@ for points in plot.lines
     put!(canvas, stroke(line))
 end
 
-using Poptart.Desktop # Application
+using Poptart.Desktop # Window Application
 width, height = 500, 500
-window1 = Windows.Window(items=[canvas], title="SimpleGraph", frame=(x=10, y=10, width=width-20, height=height-20))
+window1 = Window(items=[canvas], title="SimpleGraph", frame=(x=10, y=10, width=width-20, height=height-20))
 closenotify = Condition()
 app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
 Base.JLOptions().isinteractive==0 && wait(closenotify)

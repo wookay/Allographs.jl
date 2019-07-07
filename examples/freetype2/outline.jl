@@ -1,5 +1,5 @@
 using Allographs.FontEngines.FreeType2
-using Poptart.Desktop # Application
+using Poptart.Desktop # Window Application
 using Poptart.Controls # Canvas
 using Poptart.Drawings # Line Curve stroke translate scale
 using Colors # RGBA
@@ -30,7 +30,7 @@ end
 width, height = 500, 500
 closenotify = Condition()
 canvas = Canvas()
-window1 = Windows.Window(items=[canvas], title="freetype2", frame=(x=10, y=10, width=width-20, height=height-20))
+window1 = Window(items=[canvas], title="freetype2", frame=(x=10, y=10, width=width-20, height=height-20))
 app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
 
 font_path = normpath(@__DIR__, "IropkeBatangM.ttf")
