@@ -34,9 +34,9 @@ window1 = Windows.Window(items=[canvas], title="freetype2", frame=(x=10, y=10, w
 app = Application(windows=[window1], title="App", frame=(width=width, height=height), closenotify=closenotify)
 
 font_path = normpath(@__DIR__, "IropkeBatangM.ttf")
-commands = FreeType2.char_to_commands(font_path, '헐', 16)
+commands = FreeType2.char_to_commands(font_path, '헐', 16*2)
 put_glyph(canvas, commands) do element
-    translate(scale(element, (1/7, -1/7)), (20, 180))
+    translate(scale(element, (1/7, -1/7)), (20, 300))
 end
 
 Base.JLOptions().isinteractive==0 && wait(closenotify)

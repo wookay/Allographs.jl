@@ -1,10 +1,10 @@
-using Tutte.Graphs # Graph → ← IDMap Node @nodes
+using Tutte.Graphs # WTGraph → ←  Node @nodes
+using .Graphs: simpledigraph_nodes
 using LightGraphs.SimpleGraphs: SimpleDiGraph
 
 @nodes A B C D E
-graph = Graph(union(A → C → D → E, C → E ← B))
-idmap = IDMap(graph)
-g = SimpleDiGraph(graph)
+graph = WTGraph(union(A → C → D → E, C → E ← B))
+g, nodes = simpledigraph_nodes(graph)
 
 using Allographs.GPlot
 plot = GPlot.gplot(g)
@@ -20,7 +20,7 @@ transform(element) = translate(scale(element, 5inch.value), 200)
 textColor = RGBA(0.8, 0.7, 0.8, 0.9)
 for (i, n) in enumerate(plot.nodes)
     rect = ((n.center .- n.radius)..., (n.center .+ n.radius)...)
-    node = idmap[i]
+    node = nodes[i]
     textbox = TextBox(text=String(node.id), rect=rect, color=textColor) |> transform
     put!(canvas, textbox)
 end
