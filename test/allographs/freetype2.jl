@@ -12,10 +12,8 @@ font = FreeType2.open_font(path)
 glyph = FreeType2.char_to_glyph(font, ch, char_size)
 
 outline = pointer_from_objref(Ref(glyph.outline))
-@info :outline outline
-
 orientation = FT_Outline_Get_Orientation(outline)
-@info :orientation orientation
+@test orientation == 0
 
 FreeType2.close_font(font)
 
